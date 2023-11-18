@@ -1,31 +1,26 @@
 import streamlit as st
 
+# Set the configuration for the page
 st.set_page_config(page_title="Website Investigation Tool")
 
+# Title of your app
 st.title("Website Investigation Tool")
 
-# Create an input bar for entering the website domain
+# Input field for the user to enter the domain
 domain = st.text_input("Enter the website domain (e.g., example.com):", "example.com")
 
-# Dictionary of service URLs
+# Dictionary containing the services and their respective URL templates
 services = {
     "Whois Lookup": "https://www.who.is/whois/{}",
     "Whoxy": "https://whoxy.com/{}",
-    # Add other services here...
+    # You can add more services here
 }
 
-# Button to trigger the investigation
+# Action button for the user to trigger the investigation process
 if st.button("Investigate"):
-    # JavaScript snippet for opening URLs
-    js = "<script>"
-    
-    # Iterate through each service URL
+    # Iterate through each service and generate clickable links
     for service_name, service_url_template in services.items():
-        # Create a link to open the external website
+        # Format the service URL with the user-entered domain
         service_url = service_url_template.format(domain)
-        js += f"window.open('{service_url}', '_blank');"
-
-    js += "</script>"
-
-    # Embed JavaScript in the page
-    st.markdown(js, unsafe_allow_html=True)
+        # Display each link as a clickable hyperlink
+        st.markdown(f"[{service_name}]({service_url})", unsafe_allow_html=True)
