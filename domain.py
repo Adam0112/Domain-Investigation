@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit.components.v1 import html
 
 # Set the configuration for the page
 st.set_page_config(page_title="Website Investigation Tool")
@@ -23,18 +22,5 @@ if st.button("Investigate"):
     for service_name, service_url_template in services.items():
         # Format the service URL with the user-entered domain
         service_url = service_url_template.format(domain)
-        # Display each link as a clickable hyperlink
-        st.markdown(f"[{service_name}]({service_url})", unsafe_allow_html=True)
-
-# Function to open a link in a new tab
-def open_page(url):
-    open_script = f"""
-        <script type="text/javascript">
-            window.open('{url}', '_blank').focus();
-        </script>
-    """
-    html(open_script)
-
-# Button to open a specific link (you can add this button as needed)
-if st.button('Open link', on_click=open_page, args=('https://streamlit.io',)):
-    pass  # You can perform additional actions if needed when the button is clicked
+        # Display each link as a clickable hyperlink with target="_blank"
+        st.markdown(f'<a href="{service_url}" target="_blank">{service_name}</a>', unsafe_allow_html=True)
