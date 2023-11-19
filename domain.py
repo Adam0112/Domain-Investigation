@@ -1,26 +1,26 @@
 import streamlit as st
+from streamlit.components.v1 import html
 
-# Set the configuration for the page
-st.set_page_config(page_title="Website Investigation Tool")
+# Function to generate JavaScript for opening a new tab
+def open_page(url):
+    open_script = f"""
+        <script type="text/javascript">
+            window.open("{url}", "_blank").focus();
+        </script>
+    """
+    html(open_script)
 
-# Title of your app
-st.title("Website Investigation Tool")
+# Inserting the domain you want to investigate
+domain = st.text_input("Enter the domain you want to investigate:", "example.com")
 
-# Input field for the user to enter the domain
-domain = st.text_input("Enter the website domain (e.g., example.com):", "example.com")
-
-# Dictionary containing the services and their respective URL templates
+# Creating a dictionary of service URLs
 services = {
     "Whois Lookup": "https://www.who.is/whois/{}",
-    "Whoxy": "https://whoxy.com/{}",
-    # You can add more services here
+    # ... (add other services here)
 }
 
-# Action button for the user to trigger the investigation process
-if st.button("Investigate"):
-    # Iterate through each service and generate clickable links
-    for service_name, service_url_template in services.items():
-        # Format the service URL with the user-entered domain
-        service_url = service_url_template.format(domain)
-        # Display each link as a clickable hyperlink with target="_blank"
-        st.markdown(f'<a href="{service_url}" target="_blank">{service_name}</a>', unsafe_allow_html=True)
+# Display buttons for each service
+for service_name, service_url in services.items():
+    formatted_url = service_url.format(domain)
+    if st.button(f'Open {service_name}'):
+        open_page(formatted_url)
