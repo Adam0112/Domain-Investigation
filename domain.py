@@ -1,26 +1,45 @@
 import streamlit as st
 from streamlit.components.v1 import html
 
-# Function to generate JavaScript for opening a new tab
-def open_page(url):
-    open_script = f"""
+# Function to generate JavaScript for opening links with a delay
+def open_pages_with_delay(urls, delay):
+    delay_ms = delay * 1000  # Convert seconds to milliseconds
+    script = """
         <script type="text/javascript">
-            window.open("{url}", "_blank").focus();
+            var urls = %s;
+            var delay = %s;
+            var openLink = function(index) {
+                if (index >= urls.length) return;
+                window.open(urls[index], '_blank');
+                setTimeout(function() { openLink(index + 1); }, delay);
+            }
+            openLink(0);
         </script>
-    """
-    html(open_script)
+    """ % (urls, delay_ms)
+    html(script)
 
 # Inserting the domain you want to investigate
 domain = st.text_input("Enter the domain you want to investigate:", "example.com")
 
-# Creating a dictionary of service URLs
+# Creating a list of URLs
 services = {
     "Whois Lookup": "https://www.who.is/whois/{}",
-    # ... (add other services here)
+    "Whoxy": "https://whoxy.com/{}",
+    "Threat Intelligence": "https://threatintelligenceplatform.com/{}",
+    "Certificate Search": "https://crt.sh/?q={}",
+    "Domain History": "https://securitytrails.com/domain/{}",
+    "Malware Scanning": "https://www.virustotal.com/gui/domain/{}",
+    "urlscan.io": "https://urlscan.io/result/{}",
+    "builtwith.com": "https://builtwith.com/relationships/{}",
+    "dnslytics.com": "https://dnslytics.com/domain/{}",
+    "spyonweb.com": "https://spyonweb.com/{}",
+    "archive.org": "https://web.archive.org/web/*/{}",
+    "archive.eu": "https://archive.eu/{}",
+    "CrowdTangle": "https://apps.crowdtangle.com/search?q={}&platform=facebook&sortBy=score&sortOrder=desc",
+    "host.io": "https://host.io/{}"
 }
 
-# Display buttons for each service
-for service_name, service_url in services.items():
-    formatted_url = service_url.format(domain)
-    if st.button(f'Open {service_name}'):
-        open_page(formatted_url)
+formatted_urls = [url.format(domain) for url in services.values()]
+
+if st.button('Open All Links'):
+    open_pages_with_delay(formatted_urls, delay=5)  # Set delay in seconds here
